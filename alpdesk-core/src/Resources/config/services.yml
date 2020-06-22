@@ -1,0 +1,62 @@
+services:
+  
+  _defaults:
+    autoconfigure: true
+    autowire: true
+      
+  alpdeskcore.eventservice:
+    class: Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService
+    arguments:
+      - '@event_dispatcher'
+    public: true    
+    
+  alpdeskcore.loggingservice:
+    class: Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger
+    arguments:
+      - '@contao.framework'
+      - '%kernel.project_dir%'
+      - '%kernel.environment%'
+    public: true     
+        
+  Alpdesk\AlpdeskCore\Controller\Client\AlpdeskCoreClientController:
+    arguments:
+      - '@contao.framework'
+      - '@alpdeskcore.eventservice'
+      - '@alpdeskcore.loggingservice'
+      - '%kernel.project_dir%'
+    tags: 
+      - 'controller.service_arguments' 
+      
+  Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:
+    arguments:
+      - '@contao.framework'
+      - '@alpdeskcore.eventservice'
+      - '@alpdeskcore.loggingservice'
+    tags: 
+      - 'controller.service_arguments'   
+      
+  Alpdesk\AlpdeskCore\Controller\Plugin\AlpdeskCorePluginController:
+    arguments:
+      - '@contao.framework'
+      - '@alpdeskcore.eventservice'
+      - '@alpdeskcore.loggingservice'      
+      - '%kernel.project_dir%'
+    tags: 
+      - 'controller.service_arguments'  
+      
+  Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController:
+    arguments:
+      - '@contao.framework'
+      - '@alpdeskcore.eventservice'
+      - '@alpdeskcore.loggingservice'      
+      - '%kernel.project_dir%'
+    tags: 
+      - 'controller.service_arguments'     
+      
+  Alpdesk\AlpdeskCore\Controller\Mandant\AlpdeskCoreMandantController:
+    arguments:
+      - '@contao.framework'
+      - '@alpdeskcore.eventservice'
+      - '@alpdeskcore.loggingservice'      
+    tags: 
+      - 'controller.service_arguments'      

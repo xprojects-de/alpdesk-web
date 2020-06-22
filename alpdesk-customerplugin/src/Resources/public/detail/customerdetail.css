@@ -1,0 +1,41 @@
+
+div.projectitemitem {
+  margin-bottom: 20px;
+}
+
+div.customeritem {
+  margin-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+div.alpdeskcustomerplugin_detail button {
+  display: inline-block;
+  margin-right: 20px;
+  cursor: pointer;
+  border: none;
+  background: #3F51B5;
+  color: #fff;
+  padding: 10px 20px 10px 20px;
+}
+
+div.projectdetails {
+  background: #f0f0f0;
+  padding: 10px;
+  margin-top:10px;
+}
+
+div.projectitemitem input {
+  padding:10px;
+  width: 300px;
+}
+
+div.projectitemitem textarea {
+  padding:10px;
+  width: 80%;
+  min-height: 150px;
+}
+
+div.alpdeskcustomerplugin_detail button.deleteProjectButton {
+  background-color: #f60000;
+}

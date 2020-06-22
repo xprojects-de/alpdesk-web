@@ -1,0 +1,36 @@
+
+# Run by 
+# for contao run "docker-compose up contao"
+# You have also to run "chmod -R 0777 on wwwData/" and also on html and web folders
+# Run "docker exec -it docker-contao_contao_run_7 bash" to get inside the container => Here you can modify the Conainer
+
+version: '3.3'
+
+services:
+    contao:
+      image: phpcontaoxdebug:latest
+      restart: always
+      depends_on:
+        - database
+      network_mode: host
+      environment:
+        # Port is 9000
+        XDEBUG_CONFIG: "remote_host=192.168.1.126"
+      volumes:
+        - ./wwwData:/var/www 
+    database:
+      image: mariadb:latest
+      restart: always
+      network_mode: host
+      environment:
+        # Not working use root:root as access
+        MYSQL_ROOT_USER: root
+        MYSQL_ROOT_PASSWORD: contao
+        MYSQL_DATABASE: contao
+        MYSQL_USER: root
+        MYSQL_PASSWORD: contao
+        MYSQL_ROOT_HOST: 192.168.1.126
+      command: --init-file /tmp/init.sql  
+      volumes:
+        - ./db:/var/lib/mysql
+        - ./dbinit/init.sql:/tmp/init.sql      

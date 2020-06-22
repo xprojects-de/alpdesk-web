@@ -1,0 +1,31 @@
+<div id="alpdeskcustomerplugin_list" class="alpdeskcustomerplugin_list">
+  <mat-toolbar class="mat-toolbar mat-toolbar-single-row">
+    <span><?= $this->title ?></span>
+  </mat-toolbar>
+  <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+  <button id="backButton">back to List</button>
+  <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+  <div>
+    <?php if (count($this->data) > 0 && \is_array($this->data[0])): ?>
+      <div class="customeritem">           
+        Firma: <input value="<?= $this->data[0]['firma'] ?>" id="firma" ><br>
+        <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>      
+        Name: <input value="<?= $this->data[0]['name'] ?>" id="name" ><br>
+        <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>      
+        Email: <input value="<?= $this->data[0]['email'] ?>" id="email" ><br>
+        <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>      
+        Telefon: <input value="<?= $this->data[0]['telefon'] ?>" id="telefon" ><br>
+        <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>      
+        Strasse: <input value="<?= $this->data[0]['strasse'] ?>" id="strasse" ><br>
+        <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>      
+        Ort: <input value="<?= $this->data[0]['ort'] ?>" id="ort" ><br>
+        <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>      
+      </div>
+      <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+      <button id="saveCustomerButton" data-id="<?= $this->data[0]['id'] ?>">save</button>
+      <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+    </div>
+  <?php else: ?>
+    <p class="info">No Data avalible</p>
+  <?php endif; ?>
+</div>

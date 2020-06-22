@@ -1,0 +1,31 @@
+services:
+  
+  alpdeskcore.listener.auth_success:
+    class: Alpdesk\AlpdeskDemoPlugin\Events\Listener\AlpdeskDemoPluginEventAuthSuccessListener
+    tags:
+      - { name: kernel.event_listener, event: alpdesk.auth_success} 
+      
+  alpdeskcore.listener.auth_verify:
+    class: Alpdesk\AlpdeskDemoPlugin\Events\Listener\AlpdeskDemoPluginEventAuthVerifyListener
+    tags:
+      - { name: kernel.event_listener, event: alpdesk.auth_verify}   
+      
+  alpdeskcore.listener.auth_invalid:
+    class: Alpdesk\AlpdeskDemoPlugin\Events\Listener\AlpdeskDemoPluginEventAuthInvalidListener
+    tags:
+      - { name: kernel.event_listener, event: alpdesk.auth_invalid}     
+      
+  alpdeskcore.listener.plugincall:
+    class: Alpdesk\AlpdeskDemoPlugin\Events\Listener\AlpdeskDemoPluginEventPlugincalledListener
+    tags:
+      - { name: kernel.event_listener, event: alpdesk.plugincall}     
+      
+  alpdeskcore.listener.mandantlist:
+    class: Alpdesk\AlpdeskDemoPlugin\Events\Listener\AlpdeskDemoPluginEventMandantListListener
+    tags:
+      - { name: kernel.event_listener, event: alpdesk.mandantlist}  
+      
+  alpdeskcore.listener.mandantedit:
+    class: Alpdesk\AlpdeskDemoPlugin\Events\Listener\AlpdeskDemoPluginEventMandantEditListener
+    tags:
+      - { name: kernel.event_listener, event: alpdesk.mandantedit}     

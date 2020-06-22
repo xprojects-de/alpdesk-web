@@ -1,0 +1,32 @@
+<div id="alpdeskcustomerplugin_detail" class="alpdeskcustomerplugin_detail">
+  <mat-toolbar class="mat-toolbar mat-toolbar-single-row">
+    <span><?= $this->title ?></span>
+  </mat-toolbar>
+  <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+  <button id="backButton">back to List</button>
+  <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+  <div>
+    <?php if (count($this->data) > 0 && \is_array($this->data[0])): ?>
+      <div class="projectitemitem">
+        <h4>Projekt: <input value="<?= $this->data[0]['title'] ?>" id="title" ></h4>             
+        <div class="projectdetails">
+          Domain: <input value="<?= $this->data[0]['domain'] ?>" id="domain" ><br>
+          <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+          FTP:<br> 
+          <textarea id="ftp"><?= $this->data[0]['ftp'] ?></textarea>
+          <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+          Datenbank:<br> 
+          <textarea id="datenbank"><?= $this->data[0]['datenbank'] ?></textarea>
+          <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+          Beschreibung:<br> 
+          <textarea id="beschreibung"><?= $this->data[0]['beschreibung'] ?></textarea>
+        </div>
+        <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+        <button id="saveButton" data-id="<?= $this->data[0]['id'] ?>">save</button>
+        <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+      </div>
+    <?php else: ?>
+      <p class="info">No Data avalible</p>
+    <?php endif; ?>
+  </div>
+</div>

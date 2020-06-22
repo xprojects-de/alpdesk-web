@@ -1,0 +1,22 @@
+<div id="alpdeskcustomerplugin_list" class="alpdeskcustomerplugin_list">
+  <mat-toolbar class="mat-toolbar mat-toolbar-single-row">
+    <span><?= $this->title ?></span>
+  </mat-toolbar>
+  <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+  <button id="newCustomerButton">new Customer</button>
+  <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+  <div>
+    <?php if (count($this->data) > 0): ?>
+      <?php foreach ($this->data as $customer): ?>
+        <div class="customeritem">
+          <button data-id="<?= $customer['id'] ?>" class="deleteCustomerButton">delete</button>
+          <button data-id="<?= $customer['id'] ?>" class="editCustomerButton">edit</button>
+          <button data-id="<?= $customer['id'] ?>" class="customerdetailbutton">Detail</button>
+          <strong><?= $customer['firma'] ?></strong> | <?= $customer['name'] ?>   
+        </div>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <p class="info">No Data avalible</p>
+    <?php endif; ?>
+  </div>
+</div>

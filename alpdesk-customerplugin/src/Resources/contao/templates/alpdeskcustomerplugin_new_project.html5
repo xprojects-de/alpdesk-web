@@ -1,0 +1,28 @@
+<div id="alpdeskcustomerplugin_detail" class="alpdeskcustomerplugin_detail">
+  <mat-toolbar class="mat-toolbar mat-toolbar-single-row">
+    <span><?= $this->title ?></span>
+  </mat-toolbar>
+  <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+  <button id="backButton">back to List</button>
+  <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+  <div>
+    <div class="projectitemitem">
+      <h4>Projekt: <input value="" id="title" ></h4>             
+      <div class="projectdetails">
+        Domain: <input value="" id="domain" ><br>
+        <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+        FTP:<br> 
+        <textarea id="ftp"></textarea>
+        <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+        Datenbank:<br> 
+        <textarea id="datenbank"></textarea>
+        <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+        Beschreibung:<br> 
+        <textarea id="beschreibung"></textarea>
+      </div>
+      <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+      <button id="createButton" data-id="<?= $this->data ?>">create</button>
+      <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+    </div>
+  </div>
+</div>

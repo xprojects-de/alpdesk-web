@@ -1,0 +1,15 @@
+# Cors on Server
+
+Add following to config/parameters.yml
+
+...
+nelmio_cors:
+    defaults:
+        origin_regex: true
+        allow_origin: ['localhost:[0-9]|xdebian:[0-9]|alpdesk.de|api.alpdesk.de']
+        allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
+        allow_headers: ['Content-Type', 'Authorization']
+        expose_headers: ['Link']
+        max_age: 3600
+    paths:
+        '^/': null   

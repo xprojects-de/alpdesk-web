@@ -1,0 +1,44 @@
+<div id="alpdeskcustomerplugin_detail" class="alpdeskcustomerplugin_detail">
+  <mat-toolbar class="mat-toolbar mat-toolbar-single-row">
+    <span><?= $this->title ?></span>
+  </mat-toolbar>
+  <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+  <button id="backButton">back to List</button>
+  <button data-id="<?= $this->data['customerdata']['id'] ?>" id="newProjectButton">new Project</button>
+  <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+  <div>
+    <?php if (count($this->data) > 0): ?>
+      <h2><?= $this->data['customerdata']['firma'] ?></h2>
+      <h3><?= $this->data['customerdata']['name'] ?></h3>
+      <p>
+        Email: <?= $this->data['customerdata']['email'] ?><br>
+        Telefon: <?= $this->data['customerdata']['telefon'] ?><br>
+        Addresse: <?= $this->data['customerdata']['strasse'] ?>, <?= $this->data['customerdata']['ort'] ?><br>
+      </p>
+      <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+      <?php foreach ($this->data['projectdata'] as $project): ?>
+        <div class="projectitemitem">
+          <h4>Projekt: <?= $project['title'] ?></h4>             
+          <div class="projectdetails">
+            Domain: <?= $project['domain'] ?><br>
+            <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+            FTP:<br> 
+            <p><?= nl2br($project['ftp']) ?></p>
+            <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+            Datenbank:<br> 
+            <p><?= nl2br($project['datenbank']) ?></p>
+            <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+            Beschreibung:<br> 
+            <p><?= nl2br($project['beschreibung']) ?></p>
+            <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+            <button data-id="<?= $project['id'] ?>" class="editProjectButton">edit</button>
+            <button data-id="<?= $project['id'] ?>" class="deleteProjectButton">delete</button>
+            <mat-divider role="separator" class="mat-divider mat-divider-horizontal" aria-orientation="horizontal"></mat-divider>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <p class="info">No Data avalible</p>
+<?php endif; ?>
+  </div>
+</div>
