@@ -10,7 +10,7 @@ use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
 class AlpdeskAutomationDcaUtils extends Backend {
 
   public function showLabelItems($row, $label, $dc, $args): array {
-    $args[0] = date('Y-m-d H:i:s');
+    $args[0] = date('Y-m-d H:i:s', intval($args[0]));
     try {
       $mandant = AlpdeskcoreMandantModel::findById(intval($args[1]));
       if ($mandant !== null) {
