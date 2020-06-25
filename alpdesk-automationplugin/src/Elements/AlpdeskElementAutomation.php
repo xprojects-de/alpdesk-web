@@ -36,7 +36,10 @@ class AlpdeskElementAutomation extends AlpdeskCoreElement {
     $dbItems = AlpdeskautomationitemsModel::findBy(array('mandant=?'), array($mandantId));
     if ($dbItems !== null) {
       foreach ($dbItems as $dbItem) {
+        $date = date('d.m.Y H:i', intval($dbItem->tstamp));
         array_push($returnValue['items'], array(
+            'tstamp' => $dbItem->tstamp,
+            'date' => $date,
             'devicehandle' => $dbItem->devicehandle,
             'devicevalue' => json_decode($dbItem->devicevalue, true)
         ));
@@ -45,7 +48,10 @@ class AlpdeskElementAutomation extends AlpdeskCoreElement {
     $dbChanges = AlpdeskautomationchangesModel::findBy(array('mandant=?'), array($mandantId));
     if ($dbChanges !== null) {
       foreach ($dbChanges as $dbChange) {
+        $date = date('d.m.Y H:i', intval($dbChange->tstamp));
         array_push($returnValue['changes'], array(
+            'tstamp' => $dbChange->tstamp,
+            'date' => $date,
             'devicehandle' => $dbChange->devicehandle,
             'devicevalue' => json_decode($dbChange->devicevalue, true)
         ));
