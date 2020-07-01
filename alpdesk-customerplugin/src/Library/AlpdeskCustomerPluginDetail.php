@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCustomerPlugin\Library;
 
 use Contao\Environment;
+use Contao\StringUtil;
 use Contao\FrontendTemplate;
 use Alpdesk\AlpdeskCore\Model\Database\AlpdeskcoreDatabasemanagerModel;
 use Doctrine\DBAL\Connection;
@@ -40,11 +41,11 @@ class AlpdeskCustomerPluginDetail {
             ->set('p.datenbank', '?')
             ->set('p.beschreibung', '?')
             ->where('p.id=?')
-            ->setParameter(0, utf8_decode($params['title']))
-            ->setParameter(1, utf8_decode($params['domain']))
-            ->setParameter(2, utf8_decode($params['ftp']))
-            ->setParameter(3, utf8_decode($params['datenbank']))
-            ->setParameter(4, utf8_decode($params['beschreibung']))
+            ->setParameter(0, StringUtil::convertEncoding($params['title'], 'UTF-8'))
+            ->setParameter(1, StringUtil::convertEncoding($params['domain'], 'UTF-8'))
+            ->setParameter(2, StringUtil::convertEncoding($params['ftp'], 'UTF-8'))
+            ->setParameter(3, StringUtil::convertEncoding($params['datenbank'], 'UTF-8'))
+            ->setParameter(4, StringUtil::convertEncoding($params['beschreibung'], 'UTF-8'))
             ->setParameter(5, intval($params['id'])
     );
     $queryBuilder->execute();
@@ -59,11 +60,11 @@ class AlpdeskCustomerPluginDetail {
             ->setValue('datenbank', '?')
             ->setValue('beschreibung', '?')
             ->setValue('pid', '?')
-            ->setParameter(0, utf8_decode($params['title']))
-            ->setParameter(1, utf8_decode($params['domain']))
-            ->setParameter(2, utf8_decode($params['ftp']))
-            ->setParameter(3, utf8_decode($params['datenbank']))
-            ->setParameter(4, utf8_decode($params['beschreibung']))
+            ->setParameter(0, StringUtil::convertEncoding($params['title'], 'UTF-8'))
+            ->setParameter(1, StringUtil::convertEncoding($params['domain'], 'UTF-8'))
+            ->setParameter(2, StringUtil::convertEncoding($params['ftp'], 'UTF-8'))
+            ->setParameter(3, StringUtil::convertEncoding($params['datenbank'], 'UTF-8'))
+            ->setParameter(4, StringUtil::convertEncoding($params['beschreibung'], 'UTF-8'))
             ->setParameter(5, intval($params['id']));
     $queryBuilder->execute();
   }
