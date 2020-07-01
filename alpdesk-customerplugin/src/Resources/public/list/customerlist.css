@@ -10,17 +10,17 @@ div.alpdeskcustomerplugin_list button {
   margin-right: 20px;
   cursor: pointer;
   border: none;
-  background: #3F51B5;
-  color: #fff;
+  background: #8BC34A;
+  color: #000;
   padding: 10px 20px 10px 20px;
 }
 
 div.alpdeskcustomerplugin_list button.deleteCustomerButton {
-  background-color: #f60000;
+  background-color: #F9624C;
 }
 
 div.alpdeskcustomerplugin_list button.editCustomerButton {
-  background-color: green;
+  background-color: #00b8ff;
 }
 
 div.customeritem input {

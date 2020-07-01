@@ -6,6 +6,7 @@ namespace Alpdesk\AlpdeskCustomerPlugin\Library;
 
 use Contao\Environment;
 use Contao\FrontendTemplate;
+use Contao\StringUtil;
 use Alpdesk\AlpdeskCore\Model\Database\AlpdeskcoreDatabasemanagerModel;
 use Doctrine\DBAL\Connection;
 
@@ -22,12 +23,12 @@ class AlpdeskCustomerPluginList {
             ->setValue('telefon', '?')
             ->setValue('strasse', '?')
             ->setValue('ort', '?')
-            ->setParameter(0, utf8_decode($params['firma']))
-            ->setParameter(1, utf8_decode($params['name']))
-            ->setParameter(2, utf8_decode($params['email']))
-            ->setParameter(3, utf8_decode($params['telefon']))
-            ->setParameter(4, utf8_decode($params['strasse']))
-            ->setParameter(5, utf8_decode($params['ort']));
+            ->setParameter(0, StringUtil::convertEncoding($params['firma'], 'UTF-8'))
+            ->setParameter(1, StringUtil::convertEncoding($params['name'], 'UTF-8'))
+            ->setParameter(2, StringUtil::convertEncoding($params['email'], 'UTF-8'))
+            ->setParameter(3, StringUtil::convertEncoding($params['telefon'], 'UTF-8'))
+            ->setParameter(4, StringUtil::convertEncoding($params['strasse'], 'UTF-8'))
+            ->setParameter(5, StringUtil::convertEncoding($params['ort'], 'UTF-8'));
     $queryBuilder->execute();
   }
 
@@ -41,12 +42,12 @@ class AlpdeskCustomerPluginList {
             ->set('p.strasse', '?')
             ->set('p.ort', '?')
             ->where('p.id=?')
-            ->setParameter(0, utf8_decode($params['firma']))
-            ->setParameter(1, utf8_decode($params['name']))
-            ->setParameter(2, utf8_decode($params['email']))
-            ->setParameter(3, utf8_decode($params['telefon']))
-            ->setParameter(4, utf8_decode($params['strasse']))
-            ->setParameter(5, utf8_decode($params['ort']))
+            ->setParameter(0, StringUtil::convertEncoding($params['firma'], 'UTF-8'))
+            ->setParameter(1, StringUtil::convertEncoding($params['name'], 'UTF-8'))
+            ->setParameter(2, StringUtil::convertEncoding($params['email'], 'UTF-8'))
+            ->setParameter(3, StringUtil::convertEncoding($params['telefon'], 'UTF-8'))
+            ->setParameter(4, StringUtil::convertEncoding($params['strasse'], 'UTF-8'))
+            ->setParameter(5, StringUtil::convertEncoding($params['ort'], 'UTF-8'))
             ->setParameter(6, intval($params['id'])
     );
     $queryBuilder->execute();
@@ -55,6 +56,12 @@ class AlpdeskCustomerPluginList {
   private function getCustomerData(): array {
     $queryBuilder = $this->dbConnection->createQueryBuilder();
     $queryBuilder->select('*')->from('tl_xpw_kunden')->orderBy('firma', 'ASC');
+    return $queryBuilder->execute()->fetchAll();
+  }
+
+  private function getCustomerDataById(int $id): array {
+    $queryBuilder = $this->dbConnection->createQueryBuilder();
+    $queryBuilder->select('*')->from('tl_xpw_kunden')->where('id=?')->setParameter(0, intval($id));
     return $queryBuilder->execute()->fetchAll();
   }
 
@@ -95,7 +102,7 @@ class AlpdeskCustomerPluginList {
     } else if ($params['type'] == 'editCustomer') {
       $template = new FrontendTemplate('alpdeskcustomerplugin_edit_customer');
       $template->title = 'Customer Edit';
-      $template->data = $this->getCustomerData(intval($params['id']));
+      $template->data = $this->getCustomerDataById(intval($params['id']));
       return $template->parse();
     } else if ($params['type'] == 'editsaveCustomer') {
       $this->updateCustomer($params);

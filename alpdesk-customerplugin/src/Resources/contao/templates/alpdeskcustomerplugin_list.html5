@@ -11,7 +11,7 @@
         <div class="customeritem">
           <button data-id="<?= $customer['id'] ?>" class="deleteCustomerButton">delete</button>
           <button data-id="<?= $customer['id'] ?>" class="editCustomerButton">edit</button>
-          <button data-id="<?= $customer['id'] ?>" class="customerdetailbutton">Detail</button>
+          <button data-id="<?= $customer['id'] ?>" class="customerdetailbutton">detail</button>
           <strong><?= $customer['firma'] ?></strong> | <?= $customer['name'] ?>   
         </div>
       <?php endforeach; ?>
