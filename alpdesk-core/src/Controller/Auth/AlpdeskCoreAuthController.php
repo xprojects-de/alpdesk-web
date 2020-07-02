@@ -16,8 +16,8 @@ use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreAuthSuccessEvent;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreAuthVerifyEvent;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreAuthInvalidEvent;
 use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreAuthResponse;
-use Alpdesk\AlpdeskCore\Jwt\AuthorizationHeaderBearerTokenExtractor;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskCoreAuthController extends Controller {
 
@@ -78,14 +78,17 @@ class AlpdeskCoreAuthController extends Controller {
    * Authorization Bearer TOKEN in Header
    * 
    * @return JsonResponse
-   * {"alpdesk_token":"JWT","username":"test","verify":false,"invalid":false} with AlpdeskCoreConstants::$STATUSCODE_OK
+   * {"username":"test","verify":true,"invalid":false} with AlpdeskCoreConstants::$STATUSCODE_OK
    * OR ErrorMessage with AlpdeskCoreConstants::$STATUSCODE_COMMONERROR
    * 
    */
-  public function verify(Request $request): JsonResponse {
+  public function verify(Request $request, UserInterface $user): JsonResponse {
     try {
-      $jwtToken = AuthorizationHeaderBearerTokenExtractor::extract($request);
-      $response = (new AlpdeskCoreAuthToken())->verifyToken($jwtToken);
+      $response = new AlpdeskCoreAuthResponse();
+      $response->setUsername($user->getUsername());
+      $response->setAlpdesk_token($user->getUsedToken());
+      $response->setInvalid(false);
+      $response->setVerify(true);
       $event = new AlpdeskCoreAuthVerifyEvent($response);
       $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthVerifyEvent::NAME);
       $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | Verify successfully', __METHOD__);
@@ -106,10 +109,9 @@ class AlpdeskCoreAuthController extends Controller {
    * OR ErrorMessage with AlpdeskCoreConstants::$STATUSCODE_COMMONERROR
    * 
    */
-  public function logout(Request $request): JsonResponse {
+  public function logout(Request $request, UserInterface $user): JsonResponse {
     try {
-      $jwtToken = AuthorizationHeaderBearerTokenExtractor::extract($request);
-      $response = (new AlpdeskCoreAuthToken())->invalidToken($jwtToken);
+      $response = (new AlpdeskCoreAuthToken())->invalidToken($user);
       $event = new AlpdeskCoreAuthInvalidEvent($response);
       $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreAuthInvalidEvent::NAME);
       $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | Logout successfully', __METHOD__);
