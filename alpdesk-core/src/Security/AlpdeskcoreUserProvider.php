@@ -13,14 +13,17 @@ use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
 use Alpdesk\AlpdeskCore\Model\Auth\AlpdeskcoreSessionsModel;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
+use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
 
 class AlpdeskcoreUserProvider implements UserProviderInterface {
 
   private $framework;
+  protected AlpdeskcoreLogger $logger;
 
-  public function __construct(ContaoFrameworkInterface $framework) {
+  public function __construct(ContaoFrameworkInterface $framework, AlpdeskcoreLogger $logger) {
     $this->framework = $framework;
     $this->framework->initialize();
+    $this->logger = $logger;
   }
 
   public static function createJti($username) {
@@ -38,11 +41,13 @@ class AlpdeskcoreUserProvider implements UserProviderInterface {
   public static function extractUsernameFromToken(string $jwtToken): string {
     $username = JwtToken::parse($jwtToken)->getClaim('username');
     if ($username == null || $username == '') {
+      $this->logger->error('invalid username', __METHOD__);
       throw new AuthenticationException('invalid username');
     }
     $validateAndVerify = self::validateAndVerifyToken($jwtToken, $username);
     if ($validateAndVerify == false) {
       $msg = 'invalid JWT-Token for username:' . $username . ' at verification and validation';
+      $this->logger->error($msg, __METHOD__);
       throw new AuthenticationException($msg);
     }
     return AlpdeskcoreInputSecurity::secureValue($username);

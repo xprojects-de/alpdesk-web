@@ -22,11 +22,13 @@ services:
     class: Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider
     arguments:
       - "@contao.framework" 
+      - '@alpdeskcore.loggingservice'
   
   alpdeskcore.security.token_authenticator:
     class: Alpdesk\AlpdeskCore\Security\AlpdeskcoreTokenAuthenticator
     arguments:
-      - "@contao.framework"     
+      - "@contao.framework"
+      - '@alpdeskcore.loggingservice'
         
   Alpdesk\AlpdeskCore\Controller\Client\AlpdeskCoreClientController:
     arguments:
