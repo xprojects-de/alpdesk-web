@@ -31,16 +31,25 @@ class AlpdeskcoreUserProvider implements UserProviderInterface {
     return JwtToken::generate(self::createJti($username), $ttl, array('username' => $username));
   }
 
-  public function getValidatedUsernameFromToken(string $token): string {
-    $username = JwtToken::parse($token)->getClaim('username');
+  public static function validateAndVerifyToken(string $jwtToken, string $username): bool {
+    return JwtToken::validateAndVerify($jwtToken, self::createJti($username));
+  }
+
+  public static function extractUsernameFromToken(string $jwtToken): string {
+    $username = JwtToken::parse($jwtToken)->getClaim('username');
     if ($username == null || $username == '') {
       throw new AuthenticationException('invalid username');
     }
-    $validateAndVerify = JwtToken::validateAndVerify($token, self::createJti($username));
+    $validateAndVerify = self::validateAndVerifyToken($jwtToken, $username);
     if ($validateAndVerify == false) {
-      throw new AuthenticationException('invalid JWT-Token for username:' . $username . ' at verification and validation');
+      $msg = 'invalid JWT-Token for username:' . $username . ' at verification and validation';
+      throw new AuthenticationException($msg);
     }
     return AlpdeskcoreInputSecurity::secureValue($username);
+  }
+
+  public function getValidatedUsernameFromToken(string $token): string {
+    return self::extractUsernameFromToken($token);
   }
 
   /**
@@ -54,12 +63,13 @@ class AlpdeskcoreUserProvider implements UserProviderInterface {
     $alpdeskUser->setUsername($username);
     $sessionModel = AlpdeskcoreSessionsModel::findByUsername($username);
     if ($sessionModel !== null) {
-      if (JwtToken::validateAndVerify($sessionModel->token, self::createJti($username))) {
+      if (self::validateAndVerifyToken($sessionModel->token, $username)) {
         $alpdeskUser->setToken($sessionModel->token);
       }
     }
     $userData = AlpdeskcoreMandantModel::findByAuthUsername($username);
     if ($userData !== null) {
+      $alpdeskUser->setMandantid($userData->id);
       $alpdeskUser->setFixToken($userData->fixtoken);
     }
     return $alpdeskUser;
