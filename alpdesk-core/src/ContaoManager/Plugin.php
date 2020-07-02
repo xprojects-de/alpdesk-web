@@ -79,6 +79,20 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface, Extension
                         'guard' => $guard,
                         'provider' => 'alpdeskcore.security.user_provider',
                     ],
+                    'alpdeskcore_filedownload' => [
+                        'pattern' => '/download',
+                        'anonymous' => true,
+                        'stateless' => true,
+                        'guard' => $guard,
+                        'provider' => 'alpdeskcore.security.user_provider',
+                    ],
+                    'alpdeskcore_fileupload' => [
+                        'pattern' => '/upload',
+                        'anonymous' => true,
+                        'stateless' => true,
+                        'guard' => $guard,
+                        'provider' => 'alpdeskcore.security.user_provider',
+                    ],
                 ],
                 array_slice($extensionConfig['firewalls'], $offset, null, true)
         );
