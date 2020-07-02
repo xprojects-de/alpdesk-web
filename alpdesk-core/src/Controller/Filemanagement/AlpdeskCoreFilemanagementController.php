@@ -14,8 +14,8 @@ use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreFilemanagementException;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreFileuploadEvent;
-use Alpdesk\AlpdeskCore\Jwt\AuthorizationHeaderBearerTokenExtractor;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskCoreFilemanagementController extends Controller {
 
@@ -55,13 +55,12 @@ class AlpdeskCoreFilemanagementController extends Controller {
    * OR ErrorMessage with AlpdeskCoreConstants::$STATUSCODE_COMMONERROR
    * 
    */
-  public function upload(Request $request): JsonResponse {
+  public function upload(Request $request, UserInterface $user): JsonResponse {
     try {
       $uploadFile = $request->files->get('file');
       $target = $request->get('target');
-      $alpdesk_token = $request->get('alpdesk_token');
-      if ($uploadFile !== null && $target !== null && $alpdesk_token !== null) {
-        $response = (new AlpdeskCoreFilemanagement($this->rootDir))->upload($uploadFile, $target, $alpdesk_token);
+      if ($uploadFile !== null && $target !== null) {
+        $response = (new AlpdeskCoreFilemanagement($this->rootDir))->upload($uploadFile, $target, $user);
         $event = new AlpdeskCoreFileuploadEvent($response);
         $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreFileuploadEvent::NAME);
         $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | Upload successfully', __METHOD__);
@@ -75,11 +74,10 @@ class AlpdeskCoreFilemanagementController extends Controller {
     }
   }
 
-  public function download(Request $request) {
+  public function download(Request $request, UserInterface $user) {
     try {
-      $jwtToken = AuthorizationHeaderBearerTokenExtractor::extract($request);
       $downloaddata = (array) json_decode($request->getContent(), true);
-      $file = (new AlpdeskCoreFilemanagement($this->rootDir))->download($jwtToken, $downloaddata);
+      $file = (new AlpdeskCoreFilemanagement($this->rootDir))->download($user, $downloaddata);
       $this->logger->info('Download successfully', __METHOD__);
       return $file;
     } catch (\Exception | AlpdeskCoreFilemanagementException $exception) {
