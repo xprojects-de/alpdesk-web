@@ -14,8 +14,8 @@ use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Library\Plugin\AlpdeskCorePlugincallResponse;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCorePlugincallEvent;
-use Alpdesk\AlpdeskCore\Jwt\AuthorizationHeaderBearerTokenExtractor;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskCorePluginController extends Controller {
 
@@ -58,11 +58,10 @@ class AlpdeskCorePluginController extends Controller {
    * OR ErrorMessage with AlpdeskCoreConstants::$STATUSCODE_COMMONERROR
    * 
    */
-  public function call(Request $request): JsonResponse {
+  public function call(Request $request, UserInterface $user): JsonResponse {
     try {
-      $jwtToken = AuthorizationHeaderBearerTokenExtractor::extract($request);
       $plugindata = (array) json_decode($request->getContent(), true);
-      $response = (new AlpdeskCorePlugin($this->rootDir))->call($jwtToken, $plugindata);
+      $response = (new AlpdeskCorePlugin($this->rootDir))->call($user, $plugindata);
       $event = new AlpdeskCorePlugincallEvent($response);
       $this->eventService->getDispatcher()->dispatch($event, AlpdeskCorePlugincallEvent::NAME);
       $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | Plugincall "' . $event->getResultData()->getPlugin() . '" successfully', __METHOD__);
