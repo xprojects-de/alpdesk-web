@@ -41,13 +41,11 @@ class AlpdeskcoreUserProvider implements UserProviderInterface {
   public static function extractUsernameFromToken(string $jwtToken): string {
     $username = JwtToken::parse($jwtToken)->getClaim('username');
     if ($username == null || $username == '') {
-      $this->logger->error('invalid username', __METHOD__);
       throw new AuthenticationException('invalid username');
     }
     $validateAndVerify = self::validateAndVerifyToken($jwtToken, $username);
     if ($validateAndVerify == false) {
       $msg = 'invalid JWT-Token for username:' . $username . ' at verification and validation';
-      $this->logger->error($msg, __METHOD__);
       throw new AuthenticationException($msg);
     }
     return AlpdeskcoreInputSecurity::secureValue($username);
