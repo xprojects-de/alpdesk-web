@@ -59,7 +59,7 @@ alpdesk_filemanagement_upload:
     path: /upload
     defaults:
         _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController:upload
-        _scope: frontend
+        _scope: alpdeskapi
         _token_check: false
     methods: [POST] 
     
@@ -67,7 +67,7 @@ alpdesk_filemanagement_download:
     path: /download
     defaults:
         _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController:download
-        _scope: frontend
+        _scope: alpdeskapi
         _token_check: false
     methods: [POST]       
     
