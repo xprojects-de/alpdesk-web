@@ -69,7 +69,8 @@ class AlpdeskcoreUserProvider implements UserProviderInterface {
     }
     $userData = AlpdeskcoreMandantModel::findByAuthUsername($username);
     if ($userData !== null) {
-      $alpdeskUser->setMandantid($userData->id);
+      $alpdeskUser->setMandantid(intval($userData->id));
+      $alpdeskUser->setMandantPid(intval($userData->pid));
       $alpdeskUser->setFixToken($userData->fixtoken);
     }
     return $alpdeskUser;
