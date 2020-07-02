@@ -79,8 +79,12 @@ class AlpdeskcoreTokenAuthenticator extends AbstractGuardAuthenticator {
   public function checkCredentials($credentials, UserInterface $user) {
     if ($user->getFixToken() === $credentials['token']) {
       $user->setFixTokenAuth(true);
+      return ($user->getFixToken() === $credentials['token']);
     }
-    return (($user->getToken() === $credentials['token']) || ($user->getFixToken() === $credentials['token']));
+    if ($user->getToken() != '') {
+      return ($user->getToken() === $credentials['token']);
+    }
+    return false;
   }
 
   public function supports(Request $request) {
