@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Library\Filemanagement;
 
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreFilemanagementException;
-use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreAuthToken;
 use Alpdesk\AlpdeskCore\Library\Filemanagement\AlpdeskCoreFileuploadResponse;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
 use Contao\FilesModel;
@@ -13,6 +12,7 @@ use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 
 class AlpdeskCoreFilemanagement {
 
@@ -20,15 +20,6 @@ class AlpdeskCoreFilemanagement {
 
   public function __construct(string $rootDir) {
     $this->rootDir = $rootDir;
-  }
-
-  private function verifyAndgetMandant(string $username, string $alpdesk_token): int {
-    $mandantId = (new AlpdeskCoreAuthToken())->verifyTokenAndGetMandantId($username, $alpdesk_token);
-    if ($mandantId > 0) {
-      return $mandantId;
-    } else {
-      throw new AlpdeskCoreFilemanagementException("invalid token");
-    }
   }
 
   private function getMandantInformation($id): AlpdescCoreBaseMandantInfo {
@@ -98,29 +89,25 @@ class AlpdeskCoreFilemanagement {
     }
   }
 
-  public function upload(UploadedFile $uploadFile, string $target, string $alpdesk_token): AlpdeskCoreFileuploadResponse {
-    if ($uploadFile == null || $alpdesk_token == '') {
+  public function upload(UploadedFile $uploadFile, string $target, AlpdeskcoreUser $user): AlpdeskCoreFileuploadResponse {
+    if ($uploadFile == null) {
       throw new AlpdeskCoreFilemanagementException("invalid key-parameters for upload");
     }
-    $username = AlpdeskCoreAuthToken::getUsernameFromToken($alpdesk_token);
-    $mandantId = $this->verifyAndgetMandant($username, $alpdesk_token);
-    $mandantInfo = $this->getMandantInformation($mandantId);
+    $mandantInfo = $this->getMandantInformation($user->getMandantPid());
     $response = new AlpdeskCoreFileuploadResponse();
     $this->copyToTarget($uploadFile, $target, $mandantInfo, $response);
-    $response->setUsername($username);
-    $response->setAlpdesk_token($alpdesk_token);
+    $response->setUsername($user->getUsername());
+    $response->setAlpdesk_token($user->getUsedToken());
     $response->setMandantInfo($mandantInfo);
     return $response;
   }
 
-  public function download(string $jwtToken, array $downloadData): BinaryFileResponse {
-    $username = AlpdeskCoreAuthToken::getUsernameFromToken($jwtToken);
+  public function download(AlpdeskcoreUser $user, array $downloadData): BinaryFileResponse {
     if (!\array_key_exists('target', $downloadData)) {
       throw new AlpdeskCoreFilemanagementException("invalid key-parameters for download");
     }
     $target = (string) $downloadData['target'];
-    $mandantId = $this->verifyAndgetMandant($username, $jwtToken);
-    $mandantInfo = $this->getMandantInformation($mandantId);
+    $mandantInfo = $this->getMandantInformation($user->getMandantPid());
     return $this->downloadFile($target, $mandantInfo);
   }
 

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Alpdesk\AlpdeskCore\Library\Backend;
 
-use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
-use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreAuthToken;
 use Alpdesk\AlpdeskCore\Library\PDF\AlpdeskCorePDFCreator;
 use HeimrichHannot\FieldpaletteBundle\Model\FieldPaletteModel;
 use Contao\DataContainer;
@@ -15,13 +13,14 @@ use Contao\Image;
 use Alpdesk\AlpdeskCore\Model\Database\AlpdeskcoreDatabasemanagerTablesModel;
 use Alpdesk\AlpdeskCore\Library\Cryption\Cryption;
 use Alpdesk\AlpdeskCore\Jwt\JwtToken;
+use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
 
 class AlpdeskCoreDcaUtils extends Backend {
 
   public function showSessionValid($row, $label, $dc, $args): array {
     $validateAndVerify = false;
     try {
-      $validateAndVerify = JwtToken::validateAndVerify($args[1], AlpdeskCoreAuthToken::createJti($args[0]));
+      $validateAndVerify = JwtToken::validateAndVerify($args[1], AlpdeskcoreUserProvider::createJti($args[0]));
     } catch (\Exception $ex) {
       $validateAndVerify = false;
     }
@@ -45,7 +44,7 @@ class AlpdeskCoreDcaUtils extends Backend {
         $username = $dc->activeRecord->username;
       }
       try {
-        $varValue = AlpdeskCoreAuthToken::createToken($username, 0);
+        $varValue = AlpdeskcoreUserProvider::createToken($username, 0);
       } catch (\Exception $ex) {
         $varValue = $ex->getMessage();
       }

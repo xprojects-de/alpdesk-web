@@ -19,7 +19,7 @@ alpdesk_auth_verify:
     path: /auth/verify
     defaults:
         _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:verify
-        _scope: frontend
+        _scope: alpdeskapi
         _token_check: false
     methods: [POST]   
     
@@ -27,7 +27,7 @@ alpdesk_auth_logout:
     path: /auth/logout
     defaults:
         _controller: Alpdesk\AlpdeskCore\Controller\Auth\AlpdeskCoreAuthController:logout
-        _scope: frontend
+        _scope: alpdeskapi
         _token_check: false
     methods: [POST]  
     
@@ -35,7 +35,7 @@ alpdesk_plugin_call:
     path: /plugin
     defaults:
         _controller: Alpdesk\AlpdeskCore\Controller\Plugin\AlpdeskCorePluginController:call
-        _scope: frontend
+        _scope: alpdeskapi
         _token_check: false
     methods: [POST]   
     
@@ -43,7 +43,7 @@ alpdesk_mandant_list:
     path: /mandant
     defaults:
         _controller: Alpdesk\AlpdeskCore\Controller\Mandant\AlpdeskCoreMandantController:list
-        _scope: frontend
+        _scope: alpdeskapi
         _token_check: false
     methods: [POST]  
     
@@ -51,7 +51,7 @@ alpdesk_mandant_edit:
     path: /mandant/edit
     defaults:
         _controller: Alpdesk\AlpdeskCore\Controller\Mandant\AlpdeskCoreMandantController:edit
-        _scope: frontend
+        _scope: alpdeskapi
         _token_check: false
     methods: [POST]   
     
@@ -59,7 +59,7 @@ alpdesk_filemanagement_upload:
     path: /upload
     defaults:
         _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController:upload
-        _scope: frontend
+        _scope: alpdeskapi
         _token_check: false
     methods: [POST] 
     
@@ -67,7 +67,7 @@ alpdesk_filemanagement_download:
     path: /download
     defaults:
         _controller: Alpdesk\AlpdeskCore\Controller\Filemanagement\AlpdeskCoreFilemanagementController:download
-        _scope: frontend
+        _scope: alpdeskapi
         _token_check: false
     methods: [POST]       
     

@@ -9,14 +9,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdeskCoreMandant;
-use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreMandantException;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Events\AlpdeskCoreEventService;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdeskCoreMandantResponse;
 use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreMandantListEvent;
-use Alpdesk\AlpdeskCore\Events\Event\AlpdeskCoreMandantEditEvent;
-use Alpdesk\AlpdeskCore\Jwt\AuthorizationHeaderBearerTokenExtractor;
 use Alpdesk\AlpdeskCore\Logging\AlpdeskcoreLogger;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class AlpdeskCoreMandantController extends Controller {
 
@@ -57,10 +55,9 @@ class AlpdeskCoreMandantController extends Controller {
    * OR ErrorMessage with AlpdeskCoreConstants::$STATUSCODE_COMMONERROR
    * 
    */
-  public function list(Request $request): JsonResponse {
+  public function list(Request $request, UserInterface $user): JsonResponse {
     try {
-      $jwtToken = AuthorizationHeaderBearerTokenExtractor::extract($request);
-      $response = (new AlpdeskCoreMandant())->list($jwtToken);
+      $response = (new AlpdeskCoreMandant())->list($user);
       $event = new AlpdeskCoreMandantListEvent($response);
       $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreMandantListEvent::NAME);
       $this->logger->info('username:' . $event->getResultData()->getUsername() . ' | MandantList successfully', __METHOD__);
@@ -82,18 +79,8 @@ class AlpdeskCoreMandantController extends Controller {
    * OR ErrorMessage with AlpdeskCoreConstants::$STATUSCODE_COMMONERROR
    * 
    */
-  public function edit(Request $request): JsonResponse {
+  public function edit(Request $request, UserInterface $user): JsonResponse {
     return $this->outputError('Not Supported', AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
-    /* try {
-      $mandantdata = (array) json_decode($request->getContent(), true);
-      $response = (new AlpdeskCoreMandant())->edit($mandantdata);
-      $event = new AlpdeskCoreMandantEditEvent($response);
-      $this->eventService->getDispatcher()->dispatch($event, AlpdeskCoreMandantEditEvent::NAME);
-      return $this->output($event->getResultData(), AlpdeskCoreConstants::$STATUSCODE_OK);
-      } catch (AlpdeskCoreMandantException $exception) {
-      $this->logger->error($exception->getMessage(), __METHOD__);
-      return $this->outputError($exception->getMessage(), AlpdeskCoreConstants::$STATUSCODE_COMMONERROR);
-      } */
   }
 
 }

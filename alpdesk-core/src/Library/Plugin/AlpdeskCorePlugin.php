@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Alpdesk\AlpdeskCore\Library\Plugin;
 
 use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCorePluginException;
-use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreAuthToken;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantElementsModel;
 use Alpdesk\AlpdeskCore\Library\Plugin\AlpdeskCorePlugincallResponse;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
@@ -14,6 +13,7 @@ use Contao\StringUtil;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
 use Alpdesk\AlpdeskCore\Elements\AlpdeskCoreElement;
+use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
 
 class AlpdeskCorePlugin {
 
@@ -23,29 +23,23 @@ class AlpdeskCorePlugin {
     $this->rootDir = $rootDir;
   }
 
-  private function verifyAndgetMandant(string $username, string $alpdesk_token, string $plugin): int {
-    $mandantId = (new AlpdeskCoreAuthToken())->verifyTokenAndGetMandantId($username, $alpdesk_token);
-    if ($mandantId > 0) {
-      $plugins = AlpdeskcoreMandantElementsModel::findEnabledByPid($mandantId);
-      if ($plugins !== null) {
-        $validPlugin = false;
-        foreach ($plugins as $pluginElement) {
-          if ($pluginElement->type == $plugin) {
-            $validPlugin = true;
-            break;
-          }
+  private function verifyPlugin(string $username, int $mandantPid, string $plugin): void {
+    $plugins = AlpdeskcoreMandantElementsModel::findEnabledByPid($mandantPid);
+    if ($plugins !== null) {
+      $validPlugin = false;
+      foreach ($plugins as $pluginElement) {
+        if ($pluginElement->type == $plugin) {
+          $validPlugin = true;
+          break;
         }
-        if ($validPlugin == false) {
-          $msg = 'error loading plugin for username:' . $username;
-          throw new AlpdeskCorePluginException($msg);
-        }
-        return $mandantId;
-      } else {
-        $msg = 'error loading plugin because null for username:' . $username;
+      }
+      if ($validPlugin == false) {
+        $msg = 'error loading plugin for username:' . $username;
         throw new AlpdeskCorePluginException($msg);
       }
     } else {
-      throw new AlpdeskCorePluginException("invalid token");
+      $msg = 'error loading plugin because null for username:' . $username;
+      throw new AlpdeskCorePluginException($msg);
     }
   }
 
@@ -67,19 +61,18 @@ class AlpdeskCorePlugin {
     }
   }
 
-  public function call(string $jwtToken, array $plugindata): AlpdeskCorePlugincallResponse {
-    $username = AlpdeskCoreAuthToken::getUsernameFromToken($jwtToken);
+  public function call(AlpdeskcoreUser $user, array $plugindata): AlpdeskCorePlugincallResponse {
     if (!\array_key_exists('plugin', $plugindata) || !\array_key_exists('data', $plugindata)) {
       $msg = 'invalid key-parameters for plugin';
       throw new AlpdeskCorePluginException($msg);
     }
     $plugin = (string) AlpdeskcoreInputSecurity::secureValue($plugindata['plugin']);
     $data = (array) $plugindata['data'];
-    $mandantId = $this->verifyAndgetMandant($username, $jwtToken, $plugin);
-    $mandantInfo = $this->getMandantInformation($mandantId);
+    $this->verifyPlugin($user->getUsername(), $user->getMandantPid(), $plugin);
+    $mandantInfo = $this->getMandantInformation($user->getMandantPid());
     $response = new AlpdeskCorePlugincallResponse();
-    $response->setUsername($username);
-    $response->setAlpdesk_token($jwtToken);
+    $response->setUsername($user->getUsername());
+    $response->setAlpdesk_token($user->getUsedToken());
     $response->setMandantInfo($mandantInfo);
     $response->setPlugin($plugin);
     if (isset($GLOBALS['TL_ADME'][$plugin])) {
@@ -97,11 +90,11 @@ class AlpdeskCorePlugin {
         }
         $response->setData($tmp);
       } else {
-        $msg = 'plugin entrypoint wrong classtype for plugin:' . $plugin . ' and username:' . $username;
+        $msg = 'plugin entrypoint wrong classtype for plugin:' . $plugin . ' and username:' . $user->getUsername();
         throw new AlpdeskCorePluginException($msg);
       }
     } else {
-      $msg = 'plugin not installed for plugin:' . $plugin . ' and username:' . $username;
+      $msg = 'plugin not installed for plugin:' . $plugin . ' and username:' . $user->getUsername();
       throw new AlpdeskCorePluginException($msg);
     }
     return $response;
