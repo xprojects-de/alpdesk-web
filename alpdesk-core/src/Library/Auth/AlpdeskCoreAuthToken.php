@@ -8,7 +8,6 @@ use Alpdesk\AlpdeskCore\Library\Exceptions\AlpdeskCoreAuthException;
 use Alpdesk\AlpdeskCore\Model\Auth\AlpdeskcoreSessionsModel;
 use Alpdesk\AlpdeskCore\Library\Constants\AlpdeskCoreConstants;
 use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreMandantAuth;
-use Contao\Model\Collection;
 use Alpdesk\AlpdeskCore\Library\Auth\AlpdeskCoreAuthResponse;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreInputSecurity;
 use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUser;
@@ -16,7 +15,7 @@ use Alpdesk\AlpdeskCore\Security\AlpdeskcoreUserProvider;
 
 class AlpdeskCoreAuthToken {
 
-  private function setAuthSession(string $username): Collection {
+  private function setAuthSession(string $username) {
     $sessionModel = AlpdeskcoreSessionsModel::findByUsername($username);
     if ($sessionModel === null) {
       $sessionModel = new AlpdeskcoreSessionsModel();
