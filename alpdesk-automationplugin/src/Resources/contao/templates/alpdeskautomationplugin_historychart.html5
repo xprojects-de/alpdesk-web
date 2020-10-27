@@ -1,12 +1,20 @@
 <div class="alpdeskautomationplugin_historychart">
-  <?php if (count($this->sensorData) > 0): ?>
-    <?php foreach ($this->sensorData as $plotID => $sensors): ?>
-      <?php if (is_array($sensors)): ?>
-        <div class="automationhistorychart" id="plot<?= $plotID ?>" style="width:100%;height:300px;" ></div>
-        <?php foreach ($sensors as $sensor): ?>
-        <?php endforeach; ?>
+  
+  <?php if (count($this->hData) > 0): ?>
+    <?php foreach ($this->hData as $plotID => $datas): ?>
+      <?php if (is_array($datas)): ?>
+        <?php
+        $x = array();
+        $y = array();
+        foreach ($datas as $data) {
+          array_push($x, $data['date']);
+          array_push($y, $data['value']);
+        }
+        ?>
+        <h3><?= $datas[0]['title'] ?> <br><small><?= $datas[0]['label'] ?></small> </h3>
+        <div class="automationhistorychart" data-x="<?= implode('||', $x) ?>" data-y="<?= implode('||', $y) ?>" id="plot<?= $plotID ?>" style="width:100%;height:300px;" >loading...</div>
       <?php endif; ?>
     <?php endforeach; ?>
   <?php endif; ?>
-  <?= dump($this->sensorData); ?>
+
 </div>

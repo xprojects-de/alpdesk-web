@@ -39,7 +39,7 @@ class AlpdeskElementAutomationHistory extends AlpdeskCoreElement {
 
     if ($dbItems !== null) {
 
-      $sensorData = array();
+      $hData = array();
 
       foreach ($dbItems as $dbItem) {
 
@@ -55,15 +55,42 @@ class AlpdeskElementAutomationHistory extends AlpdeskCoreElement {
               $date = $item['date'];
 
               if ($type == self::$TYPE_SENSOR) {
-                if (!array_key_exists($handle, $sensorData)) {
-                  $sensorData[$handle] = array();
+                if (!array_key_exists($handle, $hData)) {
+                  $hData[$handle] = array();
                 }
-                array_push($sensorData[$handle], array(
-                    'date' => StringUtil::convertEncoding($date, 'UTF-8'),
-                    'tstamp' => StringUtil::convertEncoding($tstamp, 'UTF-8'),
+                $value = floatval(intval($item['devicevalue']['properties'][0]['value']) / 10.0);
+                array_push($hData[$handle], array(
+                    'tstamp' => $tstamp,
+                    'date' => StringUtil::convertEncoding(date('Y-m-d H:i:s', $tstamp), 'UTF-8'),
                     'title' => StringUtil::convertEncoding($item['devicevalue']['categorie'] . ' / ' . $item['devicevalue']['name'], 'UTF-8'),
                     'label' => StringUtil::convertEncoding($item['devicevalue']['properties'][0]['displayName'], 'UTF-8'),
-                    'value' => StringUtil::convertEncoding($item['devicevalue']['properties'][0]['value'], 'UTF-8')
+                    'value' => StringUtil::convertEncoding($value, 'UTF-8')
+                ));
+              } else if ($type == self::$TYPE_TEMPERATURE) {
+
+                if (!array_key_exists($handle, $hData)) {
+                  $hData[$handle] = array();
+                }
+                $value = floatval(intval($item['devicevalue']['properties'][1]['value']) / 10.0);
+                array_push($hData[$handle], array(
+                    'tstamp' => $tstamp,
+                    'date' => StringUtil::convertEncoding(date('Y-m-d H:i:s', $tstamp), 'UTF-8'),
+                    'title' => StringUtil::convertEncoding($item['devicevalue']['categorie'] . ' / ' . $item['devicevalue']['name'], 'UTF-8'),
+                    'label' => StringUtil::convertEncoding($item['devicevalue']['properties'][1]['displayName'], 'UTF-8'),
+                    'value' => StringUtil::convertEncoding($value, 'UTF-8')
+                ));
+              } else if ($type == self::$TYPE_ANALOGIN) {
+
+                if (!array_key_exists($handle, $hData)) {
+                  $hData[$handle] = array();
+                }
+                $value = floatval($item['devicevalue']['properties'][1]['value']);
+                array_push($hData[$handle], array(
+                    'tstamp' => $tstamp,
+                    'date' => StringUtil::convertEncoding(date('Y-m-d H:i:s', $tstamp), 'UTF-8'),
+                    'title' => StringUtil::convertEncoding($item['devicevalue']['categorie'] . ' / ' . $item['devicevalue']['name'], 'UTF-8'),
+                    'label' => StringUtil::convertEncoding($item['devicevalue']['properties'][0]['value'], 'UTF-8'),
+                    'value' => StringUtil::convertEncoding($value, 'UTF-8')
                 ));
               }
             }
@@ -72,7 +99,7 @@ class AlpdeskElementAutomationHistory extends AlpdeskCoreElement {
       }
 
       $template = new FrontendTemplate('alpdeskautomationplugin_historychart');
-      $template->sensorData = $sensorData;
+      $template->hData = $hData;
       $returnValue = $template->parse();
     } else {
       $returnValue = 'no data avalible';
