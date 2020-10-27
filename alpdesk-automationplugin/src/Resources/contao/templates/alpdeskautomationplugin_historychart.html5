@@ -1,0 +1,12 @@
+<div class="alpdeskautomationplugin_historychart">
+  <?php if (count($this->sensorData) > 0): ?>
+    <?php foreach ($this->sensorData as $plotID => $sensors): ?>
+      <?php if (is_array($sensors)): ?>
+        <div class="automationhistorychart" id="plot<?= $plotID ?>" style="width:100%;height:300px;" ></div>
+        <?php foreach ($sensors as $sensor): ?>
+        <?php endforeach; ?>
+      <?php endif; ?>
+    <?php endforeach; ?>
+  <?php endif; ?>
+  <?= dump($this->sensorData); ?>
+</div>

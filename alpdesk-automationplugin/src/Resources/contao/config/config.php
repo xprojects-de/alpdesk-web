@@ -9,6 +9,8 @@ $GLOBALS['TL_MODELS']['tl_alpdeskautomationchanges'] = AlpdeskautomationchangesM
 $GLOBALS['TL_MODELS']['tl_alpdeskautomationhistory'] = AlpdeskautomationhistoryModel::class;
 
 $GLOBALS['TL_ADME']['automation'] = 'Alpdesk\\AlpdeskAutomationPlugin\\Elements\\AlpdeskElementAutomation';
+$GLOBALS['TL_ADME']['automationhistory'] = 'Alpdesk\\AlpdeskAutomationPlugin\\Elements\\AlpdeskElementAutomationHistory';
+
 $GLOBALS['BE_MOD']['alpdeskautomation']['alpdeskautomationitems'] = array
     (
     'tables' => array('tl_alpdeskautomationitems')
