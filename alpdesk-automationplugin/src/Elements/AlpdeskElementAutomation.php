@@ -8,8 +8,22 @@ use Alpdesk\AlpdeskCore\Elements\AlpdeskCoreElement;
 use Alpdesk\AlpdeskCore\Library\Mandant\AlpdescCoreBaseMandantInfo;
 use Alpdesk\AlpdeskAutomationPlugin\Model\AlpdeskautomationitemsModel;
 use Alpdesk\AlpdeskAutomationPlugin\Model\AlpdeskautomationchangesModel;
+use Alpdesk\AlpdeskAutomationPlugin\Model\AlpdeskautomationhistoryModel;
 
 class AlpdeskElementAutomation extends AlpdeskCoreElement {
+
+  public static $TYPE_INPUT = 1000;
+  public static $TYPE_OUTPUT = 2000;
+  public static $TYPE_TEMPERATURE = 3000;
+  public static $TYPE_SCENE = 4000;
+  public static $TYPE_TIME = 5000;
+  public static $TYPE_DIMMERDEVICE = 6000;
+  public static $TYPE_SENSOR = 7000;
+  public static $TYPE_DHT22 = 8000;
+  public static $TYPE_HEATINGPUMP = 9000;
+  public static $TYPE_VENTILATION = 10000;
+  public static $TYPE_SHADING = 11000;
+  public static $TYPE_ANALOGIN = 12000;
 
   private function changeItem(int $mandantId, array $data, array $returnValue): array {
     if ($mandantId <= 0) {
@@ -92,6 +106,39 @@ class AlpdeskElementAutomation extends AlpdeskCoreElement {
     return $returnValue;
   }
 
+  private function history(int $mandantId, array $returnValue): array {
+
+    if ($mandantId <= 0) {
+      throw new \Exception('MandantId not found');
+    }
+    $returnValue['items'] = array();
+
+    $dbItems = AlpdeskautomationhistoryModel::findBy(array('mandant=?'), array($mandantId), array('order' => 'tstamp ASC'));
+
+    if ($dbItems !== null) {
+      foreach ($dbItems as $dbItem) {
+
+        $data = json_decode($dbItem->data, true);
+        if (count($data) > 0) {
+          foreach ($data as $item) {
+            if (isset($item['devicevalue']['type'])) {
+              $type = intval($item['devicevalue']['type']);
+              if ($type == self::$TYPE_ANALOGIN ||
+                      $type == self::$TYPE_SENSOR ||
+                      $type == self::$TYPE_TEMPERATURE) {
+                array_push($returnValue['items'], $item);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    $returnValue['error'] = false;
+
+    return $returnValue;
+  }
+
   public function execute(AlpdescCoreBaseMandantInfo $mandantInfo, array $data): array {
     $response = array(
         'error' => true,
@@ -108,6 +155,9 @@ class AlpdeskElementAutomation extends AlpdeskCoreElement {
             break;
           case 'change':
             $response = $this->changeItem($mandantInfo->getId(), $data['params'], $response);
+            break;
+          case 'history':
+            $response = $this->history($mandantInfo->getId(), $response);
             break;
           default:
             break;
