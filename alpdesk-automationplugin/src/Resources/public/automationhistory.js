@@ -1,10 +1,30 @@
 
+if ($("#alpdeskautomationplugin_historychart_reload").length > 0) {
+  $("#alpdeskautomationplugin_historychart_reload").click(function () {
+    var event = new CustomEvent("alpdesk", {
+      detail: {
+        type: 'route',
+        target: 'automationhistory'
+      }
+    });
+    document.dispatchEvent(event);
+  });
+}
+
+
 $('div.automationhistorychart').each(function () {
 
   $(this).html('');
 
+  var x = $(this).attr('data-x').split('||');
+  var min = x[0];
+  if (x.length > 12) {
+    min = x[x.length - 12];
+  }
+  var max = x[x.length - 1];
+
   var trace = {
-    x: $(this).attr('data-x').split('||'),
+    x: x,
     y: $(this).attr('data-y').split('||'),
     mode: 'lines+markers',
     marker: {
@@ -20,12 +40,15 @@ $('div.automationhistorychart').each(function () {
   var data = [trace];
 
   var layout = {
+    dragmode: 'pan',
     margin: {
       l: 50,
       r: 30,
       b: 75,
       t: 25,
       pad: 2
+    }, xaxis: {
+      range: [min, max]
     }
   };
 
