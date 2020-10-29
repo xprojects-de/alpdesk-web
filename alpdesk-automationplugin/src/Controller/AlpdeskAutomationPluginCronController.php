@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Alpdesk\AlpdeskAutomationPlugin\Model\AlpdeskautomationitemsModel;
 use Alpdesk\AlpdeskAutomationPlugin\Model\AlpdeskautomationhistoryModel;
+use Alpdesk\AlpdeskAutomationPlugin\Elements\AlpdeskElementAutomationHistory;
 
 class AlpdeskAutomationPluginCronController extends Controller {
 
@@ -40,13 +41,23 @@ class AlpdeskAutomationPluginCronController extends Controller {
             $data[$dbItem->mandant] = array();
           }
 
-          $date = date('d.m.Y H:i', intval($dbItem->tstamp));
-          array_push($data[$dbItem->mandant], array(
-              'tstamp' => $dbItem->tstamp,
-              'date' => $date,
-              'devicehandle' => $dbItem->devicehandle,
-              'devicevalue' => json_decode($dbItem->devicevalue, true)
-          ));
+          $deviceValue = json_decode($dbItem->devicevalue, true);
+
+          if (isset($deviceValue['type'])) {
+
+            $type = intval($deviceValue['type']);
+
+            if ($type == AlpdeskElementAutomationHistory::$TYPE_SENSOR || $type == AlpdeskElementAutomationHistory::$TYPE_TEMPERATURE || $type == AlpdeskElementAutomationHistory::$TYPE_ANALOGIN) {
+
+              $date = date('d.m.Y H:i', intval($dbItem->tstamp));
+              array_push($data[$dbItem->mandant], array(
+                  'tstamp' => $dbItem->tstamp,
+                  'date' => $date,
+                  'devicehandle' => $dbItem->devicehandle,
+                  'devicevalue' => $deviceValue
+              ));
+            }
+          }
         }
 
         // Delete old Items
