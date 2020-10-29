@@ -18,10 +18,13 @@ $('div.automationhistorychart').each(function () {
 
   var x = $(this).attr('data-x').split('||');
   var min = x[0];
-  if (x.length > 12) {
-    min = x[x.length - 12];
+  var max = x[0];
+  if (x.length > 24) {
+    min = x[x.length - 24];
   }
-  var max = x[x.length - 1];
+  if (x.length > 0) {
+    max = x[x.length - 1];
+  }
 
   var trace = {
     x: x,
