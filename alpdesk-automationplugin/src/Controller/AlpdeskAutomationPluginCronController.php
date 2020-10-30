@@ -61,7 +61,8 @@ class AlpdeskAutomationPluginCronController extends Controller {
               $this->deleteOldItems($mandantInfo->id, $mandantInfo->automationhistorylimit);
               $mandantHistoryItems = AlpdeskautomationhistoryModel::findBy(array('mandant=?'), array($mandantInfo->id), array('order' => 'tstamp DESC', 'limit' => 1));
               if ($mandantHistoryItems !== null) {
-                if (($mandantHistoryItems->tstamp + (60 * intval($mandantInfo->automationhistorycroninterval))) > time()) {
+                $secureOffsetSecondsForScriptDuration = 20;
+                if (($mandantHistoryItems->tstamp + (60 * intval($mandantInfo->automationhistorycroninterval)) - $secureOffsetSecondsForScriptDuration) > time()) {
                   $mandantCronIntervals[$dbItem->mandant] = false;
                 }
               }
