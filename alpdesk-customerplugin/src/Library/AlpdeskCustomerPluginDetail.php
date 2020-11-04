@@ -149,8 +149,7 @@ class AlpdeskCustomerPluginDetail {
   public function render(int $customerdb, array $params): array {
     $returnValue = 'error loading Data';
     try {
-      $databaseModel = new AlpdeskcoreDatabasemanagerModel();
-      $this->dbConnection = $databaseModel->connectionById(intval($customerdb));
+      $this->dbConnection = AlpdeskcoreDatabasemanagerModel::connectionById(intval($customerdb));
       $returnValue = $this->getData($params);
     } catch (\Exception $ex) {
       $returnValue = $ex->getMessage();
