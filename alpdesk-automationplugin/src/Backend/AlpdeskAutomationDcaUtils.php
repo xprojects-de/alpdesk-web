@@ -16,7 +16,7 @@ class AlpdeskAutomationDcaUtils extends Backend {
       if ($mandant !== null) {
         $args[1] = $mandant->mandant;
       }
-    } catch (Exception $ex) {
+    } catch (\Exception $ex) {
       
     }
     return $args;
@@ -28,7 +28,7 @@ class AlpdeskAutomationDcaUtils extends Backend {
       if ($mandant !== null) {
         $args[0] = $mandant->mandant;
       }
-    } catch (Exception $ex) {
+    } catch (\Exception $ex) {
       
     }
     return $args;

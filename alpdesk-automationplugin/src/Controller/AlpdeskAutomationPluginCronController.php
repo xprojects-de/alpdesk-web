@@ -6,14 +6,14 @@ namespace Alpdesk\AlpdeskAutomationPlugin\Controller;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Alpdesk\AlpdeskAutomationPlugin\Model\AlpdeskautomationitemsModel;
 use Alpdesk\AlpdeskAutomationPlugin\Model\AlpdeskautomationhistoryModel;
 use Alpdesk\AlpdeskCore\Model\Mandant\AlpdeskcoreMandantModel;
 use Alpdesk\AlpdeskAutomationPlugin\Elements\AlpdeskElementAutomationHistory;
 
-class AlpdeskAutomationPluginCronController extends Controller {
+class AlpdeskAutomationPluginCronController extends AbstractController {
 
   protected ContaoFramework $framework;
 
